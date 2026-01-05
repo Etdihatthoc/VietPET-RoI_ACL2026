@@ -1,0 +1,169 @@
+# Stage 3: Local (RoI) Feature Alignment Configuration
+
+# Data Configuration
+data:
+  train_json: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data/combined_roi_reformat_resized.json"
+  val_json: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data/combined_roi_reformat_resized_val.json"
+  data_root: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data"
+  train_split: null  # use predefined split files
+  num_workers: 8
+  seed: 42
+
+# Prompt Configuration
+prompt:
+  template: |-
+    **Thông tin bệnh nhân:**
+    - Năm sinh: {birth_year}
+    - Giới tính: {gender}
+    - Ngày xét nghiệm: {exam_date}
+    - Bệnh sử lâm sàng: {clinical_history}
+    - Chỉ định thăm khám: {indication}
+
+    **Vai trò:** Bạn là trợ lý AI chuyên gia trong lĩnh vực chẩn đoán hình ảnh y khoa.
+
+    **Thông tin hình ảnh:**
+    - Ngữ cảnh toàn cục: <GLOBAL_VISUALS>
+    - Vùng thăm khám: {region_name_vi}
+    - Số ROI nghi ngờ: {num_rois}
+
+    **Nhiệm vụ:** Sinh mô tả các vùng ROI (vị trí, loại tổn thương, đặc tính) cho vùng {region_name_vi} dựa trên CT/PET. Câu trả lời phải bằng tiếng Việt.
+  global_section_header: ""    # đã có trong template
+  global_line: ""              # đã có trong template
+  roi_header: "- Các vùng nghi ngờ trong hình ảnh:"
+  roi_template: "  - ROI {index}: <ROI_VISUALS>"
+  reasoning_start: ""          # không dùng reasoning ở Stage 3
+  reason_prefix: ""            # không dùng reasoning prefix
+  reason_roi_template: "ROI {index}: {description}"
+  report_prefix: ""            # không sinh full report
+  max_prompt_tokens: 1536
+  max_target_tokens: 1536
+  add_bos: true
+  add_eos: true
+
+# Model Configuration
+model:
+  # Stage 2 checkpoint to load
+  stage2_checkpoint: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage2/outputs_dataAThai/checkpoints/best.pt"
+
+  # CTViT configuration (must match Stage 2 checkpoint exactly!)
+  ctvit:
+    dim: 512
+    codebook_size: 8192
+    image_size: 480
+    patch_size: 20
+    temporal_patch_size: 10
+    spatial_depth: 4
+    temporal_depth: 4
+    dim_head: 32
+    heads: 8
+    num_fusion_layers: 4
+
+  # Feature extractor
+  feature_extractor_config: "improved"  # 'basic', 'improved', 'full'
+
+  # Language decoder
+  language_decoder_name: "Qwen/Qwen3-8B"
+  language_decoder_4bit: false  # Set to true to use 4-bit quantization
+  language_decoder_kwargs: {}
+
+  # Dimensions
+  original_spatial_dims: [201, 480, 480]  # T, H, W
+  num_queries: 32  # Number of global context queries
+
+  # Graph reasoning
+  use_graph_reasoning: true
+  graph_config: "basic"  # 'basic' or 'hierarchical'
+
+  # Vision encoder settings
+  vision_gradient_checkpointing: true
+  vision_precision: "bfloat16"  # 'float32', 'float16', 'bfloat16'
+
+  # LoRA configuration for LLM (similar to Stage 2)
+  lora:
+    enabled: true
+    rank: 64
+    alpha: 128
+    dropout: 0.2
+    target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+    train_embed_tokens: false
+    train_lm_head: false
+
+  # Freeze policies for Stage 3
+  freeze:
+    vision_encoder: true           # Trained in Stage 1
+    qformer: true                  # Trained in Stage 2
+    global_projector: true         # Trained in Stage 2
+    fpn: true                      # Trained in Stage 2
+    language_decoder: true         # Keep LLM frozen
+
+  # Train policies for Stage 3
+  train:
+    roi_extractor: true            # SpatialPyramidRoI3D
+    graph_module: true             # HierarchicalROIGraphModule
+    roi_projector: true            # ROI projection head
+
+# Optimizer Configuration
+optimizer:
+  type: "AdamW"  # 'AdamW', 'AdamW8bit'
+
+  # Learning rates for different components
+  lr_roi_extractor: 5.0e-5
+  lr_graph_module: 5.0e-5
+  lr_roi_projector: 5.0e-5
+  lr_lora: 5.0e-6
+
+  # Optimizer params
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+
+# Scheduler Configuration
+scheduler:
+  type: "cosine_with_warmup"
+  warmup_ratio: 0.1  # 10% of total steps for warmup
+
+# Training Configuration
+training:
+  epochs: 20
+  batch_size: 2      # Larger batch fits on A100 80GB
+  grad_accum: 1
+  max_grad_norm: 1.0
+
+  # Mixed precision
+  mixed_precision: "bf16"  # 'bf16', 'fp16', or false
+
+  # Checkpointing
+  save_every_epoch: false
+  validation_every_epoch: true
+  resume_from: "" #null Path to checkpoint to resume from (optional)
+
+  # Generation settings (for validation CSV export)
+  max_gen_tokens: 1024
+
+  # Logging
+  log_interval: 10  # Log every N gradient steps
+
+# Output Configuration
+output:
+  dir: "outputs_ROI_Lora_reviewed_v2"
+  checkpoints_dir: "outputs_ROI_Lora_reviewed_v2/checkpoints"
+  predictions_dir: "outputs_ROI_Lora_reviewed_v2/predictions"
+  logs_dir: "outputs_ROI_Lora_reviewed_v2/logs"
+
+# WandB Configuration
+wandb:
+  enabled: true
+  project: "hirra-stage3"
+  run_name: "stage3_roi_alignment"
+  entity: null  # Optional: your wandb username or team
+  api_key: "072fb112587c6b4507f5ec59e575d234c3e22649"
+  tags: ["stage3", "roi", "alignment"]
+  notes: "Stage 3: Training ROI-specific components (SPP-RoI, GNN, RoI-Projector)"
+
+# System Configuration
+system:
+  device: "cuda"
+  seed: 42
+  num_workers: 8
+  pin_memory: true
+  persistent_workers: true

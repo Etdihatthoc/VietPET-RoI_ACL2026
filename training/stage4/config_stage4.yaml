@@ -1,0 +1,178 @@
+# Stage 4: End-to-End LLM Finetuning (LoRA) Configuration
+
+# Data Configuration
+data:
+  train_json: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data/combined_roi_reformat_resized_train.json"
+  val_json: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data/combined_roi_reformat_resized_val.json"
+  data_root: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data"
+  train_split: null  # use predefined split files
+  num_workers: 8
+  seed: 42
+
+# Prompt Configuration (PHASE 3 FIX: Added GT ROI descriptions)
+prompt:
+  template: |-
+    **Thông tin bệnh nhân:**
+    Năm sinh: {birth_year}
+    Giới tính: {gender}
+    Ngày xét nghiệm: {exam_date}
+    Bệnh sử lâm sàng: {clinical_history}
+    Chỉ định thăm khám: {indication}
+
+    **Vai trò:** Bạn là trợ lý AI chuyên gia trong lĩnh vực chẩn đoán hình ảnh y khoa.
+  global_section_header: "**Thông tin hình ảnh:**"
+  global_line: "Ngữ cảnh toàn cục: <GLOBAL_VISUALS>"
+  roi_section_header: "**Phân tích chi tiết các vùng quan tâm (ROI):**"
+  roi_item_template: |-
+    - ROI {index}: <ROI_VISUALS> | Miêu tả: {description}
+  task_instruction: |-
+    Bạn là trợ lý AI chuyên gia trong lĩnh vực chẩn đoán hình ảnh y khoa. Hãy sử dụng thông tin bệnh nhân và ngữ cảnh hình ảnh toàn cục để tạo một báo cáo lâm sàng toàn diện, có cấu trúc cho vùng {region_name_vi}. Câu trả lời của bạn phải bằng tiếng Việt.
+
+  # PHASE 4 FIX: Increased token limits to accommodate ROI descriptions
+  max_prompt_tokens: 2048       # Increased from 2048 to handle detailed ROI descriptions
+  max_target_tokens: 1024
+  add_bos: true
+  add_eos: true
+
+# Model Configuration
+model:
+  # WARMSTARTED CHECKPOINT (ưu tiên cao nhất nếu có)
+  # Checkpoint đã warmstart roi_norm và global_norm từ Stage 2 + Stage 3
+  warmstarted_checkpoint: null
+  # Checkpoints for selective loading (dùng nếu không có warmstarted_checkpoint)
+  # Stage 2: Full checkpoint for global context (vision encoder, Q-Former, global projector, LLM with LoRA)
+  stage2_checkpoint: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage2/outputs_dataAThai/checkpoints/best.pt"
+  # Stage 3: Only ROI modules (roi_extractor, graph_module, roi_projector)
+  stage3_checkpoint: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/outputs_ROI_Lora_reviewed_v2/checkpoints/best.pt"
+  merge_lora_from_stage2: false
+  train_full_llm: false
+  load_lora_from_stage2: true
+
+  use_graph_reasoning: false    # THAY ĐỔI: false → true
+  graph_config: "basic"        # Giữ hiện tại
+
+  # LoRA Configuration (STAGE 4 FIX: Increased capacity for better feature integration)
+  lora:
+    enabled: true
+    rank: 32
+    alpha: 64
+    dropout: 0.1
+    target_modules:             # Which layers to apply LoRA
+      - "q_proj"                # Query projection
+      - "k_proj"                # Key projection
+      - "v_proj"                # Value projection
+      - "o_proj"                # Output projection
+
+
+  # Optional: Train embed_tokens and lm_head
+  train_embed_tokens: false    # Match Stage 2
+  train_lm_head: false         # Match Stage 2
+
+  # Train vision components (STAGE 4 FIX: Unfreeze global for joint training with ROI)
+  train_vision_components:
+    vision_encoder: true      # ✓ FREEZE - giữ vision encoder Stage 2
+    roi_extractor: true       # Freeze ROI modules
+    graph_module: false        # Freeze ROI modules
+    roi_projector: true       # Freeze ROI modules
+    global_extractor: true    # Freeze global extractor
+    global_projector: true    # Freeze global projector
+    fpn: true                 # ✓ FREEZE - giữ FPN Stage 2
+
+# Optimizer Configuration
+optimizer:
+  type: "AdamW"  # 'AdamW' or 'AdamW8bit' (changed from AdamW8bit due to CUDA compatibility)
+
+  # Learning rates for different components
+  lr_lora: 5.0e-6               # Match Stage 2
+  lr_llm: 1.0e-6                # Full LLM fine-tuning LR
+  lr_embed: 1.0e-6              # unused when train_embed_tokens=false
+  lr_lm_head: 1.0e-6            # unused when train_lm_head=false
+
+  # Learning rates for vision components
+  lr_vision_encoder: 1.0e-6     # Vision encoder LR (CTViT) - frozen
+  lr_roi_extractor: 5.0e-6      # ROI extractor LR (10x lower than Stage 3)
+  lr_graph_module: 5.0e-6       # Graph modules LR (10x lower than Stage 3)
+  lr_roi_projector: 5.0e-6      # ROI projector LR (10x lower than Stage 3)
+  lr_global_extractor: 1.0e-6   # STAGE 4 FIX: Q-Former LR (very low, 10x lower than Stage 2)
+  lr_global_projector: 1.0e-6   # STAGE 4 FIX: Global projector LR (very low, 10x lower than Stage 2)
+
+  # Optimizer params (PHASE 4 FIX: Increased weight decay for better regularization)
+  weight_decay: 0.02            # Increased from 0.01 to reduce overfit
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+
+# Scheduler Configuration
+scheduler:
+  type: "cosine_with_warmup"
+  warmup_ratio: 0.1            # 10% of total steps for warmup (conservative strategy)
+
+# Training Configuration (PHASE 4 FIX: Added early stopping)
+training:
+  epochs: 10                    # Max epochs with early stopping
+  batch_size: 1
+  grad_accum: 2                 # Effective batch size = 2
+  max_grad_norm: 1.0
+  label_smoothing: 0.0
+
+  # PHASE 4 FIX: Early stopping to prevent overfit
+  early_stopping:
+    patience: 5                 # Stop if no improvement for 7 epochs
+    min_delta: 0.001            # Minimum change to qualify as improvement
+    monitor: "val_loss"         # Metric to monitor
+
+  # Mixed precision
+  mixed_precision: "bf16"       # 'bf16', 'fp16', or false
+
+  # Checkpointing
+  save_every_epoch: false
+  validation_every_epoch: true
+  resume_from: null             # Path to checkpoint to resume from (optional)
+
+  # Generation settings (for validation CSV export)
+  max_gen_tokens: 1024
+
+  # Logging
+  log_interval: 10  # Log every N gradient steps
+
+# Output Configuration
+output:
+  dir: "outputs_lora_stage2_Reason"
+  checkpoints_dir: "outputs_lora_stage2_Reason/checkpoints"
+  predictions_dir: "outputs_lora_stage2_Reason/predictions"
+  logs_dir: "outputs_lora_stage2_Reason/logs"
+
+# WandB Configuration
+wandb:
+  enabled: true
+  project: "hirra-stage4"
+  run_name: "stage4_comprehensive_fix_v3"
+  api_key: "072fb112587c6b4507f5ec59e575d234c3e22649"
+  entity: null  # Optional: your wandb username or team
+  tags: ["stage4", "fix-v3", "roi-coordinate-fix", "separate-layernorm", "roi-descriptions", "warmstarted", "early-stopping", "label-smoothing"]
+  notes: |-
+    Stage 4 Comprehensive Fixes (5 Phases):
+    PHASE 1 - ROI Coordinate Bugs Fixed:
+    - Fixed spatial_scale in RoIAlign3D for downsampling
+    - Fixed interpolation mode (bilinear→trilinear for 3D)
+    - Fixed coordinate scaling in Graph Builder intensity extraction
+    - Fixed hardcoded anatomical boundaries (now adaptive)
+    PHASE 2 - LayerNorm Separation:
+    - Separate roi_norm and global_norm with warmstarted weights
+    PHASE 3 - Enhanced Prompts:
+    - Added GT ROI descriptions to prompts
+    - Enhanced task instruction to leverage ROI information
+    PHASE 4 - Hyperparameter Tuning:
+    - Increased max_prompt_tokens (2048→3072) for ROI descriptions
+    - Added early stopping (patience=5)
+    - Increased weight_decay (0.01→0.02)
+    - Conservative LR strategy maintained
+    PHASE 5 - Regularization:
+    - Label smoothing (0.1)
+
+# System Configuration
+system:
+  device: "cuda"
+  seed: 42
+  num_workers: 8
+  pin_memory: true
+  persistent_workers: true

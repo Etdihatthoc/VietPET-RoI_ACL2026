@@ -1,0 +1,29 @@
+/cm/local/apps/slurm/var/spool/job01511/slurm_script: line 9: cd: too many arguments
+Error while loading conda entry point: conda-libmamba-solver (libarchive.so.19: cannot open shared object file: No such file or directory)
+Error while loading conda entry point: conda-libmamba-solver (libarchive.so.19: cannot open shared object file: No such file or directory)
+
+CondaError: Run 'conda init' before 'conda activate'
+
+Error while loading conda entry point: conda-libmamba-solver (libarchive.so.19: cannot open shared object file: No such file or directory)
+Error while loading conda entry point: conda-libmamba-solver (libarchive.so.19: cannot open shared object file: No such file or directory)
+
+CondaError: Run 'conda init' before 'conda activate'
+
+/home/user01/miniconda3/envs/dinhson/lib/python3.12/site-packages/vector_quantize_pytorch/vector_quantize_pytorch.py:261: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled = False)
+/home/user01/miniconda3/envs/dinhson/lib/python3.12/site-packages/vector_quantize_pytorch/vector_quantize_pytorch.py:391: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  @autocast(enabled = False)
+wandb: Using wandb-core as the SDK backend.  Please refer to https://wandb.me/wandb-core for more information.
+wandb: WARNING If you're specifying your api key in code, ensure this code is not shared publicly.
+wandb: WARNING Consider setting the WANDB_API_KEY environment variable, or running `wandb login` from the command line.
+wandb: Appending key for api.wandb.ai to your netrc file: /home/user01/.netrc
+wandb: Currently logged in as: son-dn225997 (son-dn225997-hanoi-university-of-science-and-technology) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: Tracking run with wandb version 0.19.8
+wandb: Run data is saved locally in /home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/wandb/run-20251123_092219-f1hysz88
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run multimodal-clip-phobert
+wandb: ⭐️ View project at https://wandb.ai/son-dn225997-hanoi-university-of-science-and-technology/hirra-stage1-clip
+wandb: 🚀 View run at https://wandb.ai/son-dn225997-hanoi-university-of-science-and-technology/hirra-stage1-clip/runs/f1hysz88
+/home/user01/miniconda3/envs/dinhson/lib/python3.12/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(
+Epoch 9/20:   0%|          | 0/431 [00:00<?, ?it/s]Epoch 9/20:   0%|          | 0/431 [00:56<?, ?it/s, loss=1.7518, temp=14.302, lr=4.87e-05]Epoch 9/20:   0%|          | 1/431 [00:56<6:45:48, 56.62s/it, loss=1.7518, temp=14.302, lr=4.87e-05]Epoch 9/20:   0%|          | 1/431 [00:58<6:45:48, 56.62s/it, loss=1.8911, temp=14.302, lr=4.87e-05]Epoch 9/20:   0%|          | 2/431 [00:58<2:55:05, 24.49s/it, loss=1.8911, temp=14.302, lr=4.87e-05]Epoch 9/20:   0%|          | 2/431 [01:00<2:55:05, 24.49s/it, loss=nan, temp=14.302, lr=4.87e-05]   Epoch 9/20:   1%|          | 3/431 [01:00<1:41:26, 14.22s/it, loss=nan, temp=14.302, lr=4.87e-05]Epoch 9/20:   1%|          | 3/431 [01:02<1:41:26, 14.22s/it, loss=nan, temp=14.302, lr=4.87e-05]Epoch 9/20:   1%|          | 4/431 [01:02<1:06:45,  9.38s/it, loss=nan, temp=14.302, lr=4.87e-05]Epoch 9/20:   1%|          | 4/431 [01:13<1:06:45,  9.38s/it, loss=nan, temp=nan, lr=4.87e-05]   Epoch 9/20:   1%|          | 5/431 [01:13<1:09:24,  9.78s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   1%|          | 5/431 [01:15<1:09:24,  9.78s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   1%|▏         | 6/431 [01:15<51:14,  7.23s/it, loss=nan, temp=nan, lr=4.87e-05]  Epoch 9/20:   1%|▏         | 6/431 [01:17<51:14,  7.23s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   2%|▏         | 7/431 [01:17<39:13,  5.55s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   2%|▏         | 7/431 [01:19<39:13,  5.55s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   2%|▏         | 8/431 [01:19<31:27,  4.46s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   2%|▏         | 8/431 [01:21<31:27,  4.46s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   2%|▏         | 9/431 [01:21<26:10,  3.72s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   2%|▏         | 9/431 [01:28<26:10,  3.72s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   2%|▏         | 10/431 [01:28<33:39,  4.80s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   2%|▏         | 10/431 [01:38<33:39,  4.80s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   3%|▎         | 11/431 [01:38<43:46,  6.25s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   3%|▎         | 11/431 [01:43<43:46,  6.25s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   3%|▎         | 12/431 [01:43<41:56,  6.01s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   3%|▎         | 12/431 [02:04<41:56,  6.01s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   3%|▎         | 13/431 [02:04<1:13:02, 10.48s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   3%|▎         | 13/431 [02:09<1:13:02, 10.48s/it, loss=nan, temp=nan, lr=4.87e-05]Epoch 9/20:   3%|▎         | 14/431 [02:09<1:01:07,  8.80s/it, loss=nan, temp=nan, lr=4.87e-05]slurmstepd: error: *** JOB 1511 ON dgx01 CANCELLED AT 2025-11-23T09:24:38 ***

@@ -1,0 +1,95 @@
+# Stage 2 configuration (Global Context Alignment)
+
+data:
+  dataset_root: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data"
+  train_json: "petct_from_stage3_train.json"       # 2,439 samples
+  val_json: "petct_from_stage3_val.json"  
+  num_workers: 8
+  pin_memory: true
+  prefetch_factor: 4
+  persistent_workers: true
+
+prompt:
+  template: |-
+    **Thông tin bệnh nhân:**
+    - Bệnh sử lâm sàng: {clinical_history}
+    - Chỉ định thăm khám: {indication}
+
+    **Hình ảnh 3D:** <GLOBAL_VISUALS>
+
+    **Vai trò:** Bạn là trợ lý AI chuyên gia trong lĩnh vực chẩn đoán hình ảnh y khoa.
+
+    **Nhiệm vụ:** Tạo một báo cáo lâm sàng toàn diện, có cấu trúc dựa trên thông tin bệnh nhân được cung cấp và kết quả hình ảnh PET/CT 3D. Mô tả chi tiết các phát hiện hình ảnh cho {region_name_en}. Câu trả lời của bạn phải bằng tiếng Việt.
+  max_prompt_tokens: 1024   # FIX: Giảm từ 2048 (actual ~247 tokens)
+  max_target_tokens: 1024   # FIX: Giảm từ 2048 (actual max 296 tokens)
+  add_bos: true
+  add_eos: true
+
+model:
+  stage1_checkpoint: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/checkpoints_2/best_old.pt"
+  language_decoder_name: "Qwen/Qwen3-8B"
+  language_decoder_4bit: false
+  feature_extractor_config: "improved"
+  num_queries: 32
+  use_graph_reasoning: false
+  graph_config: "basic"
+  train_fpn: true
+  freeze_language_decoder: true
+  freeze_vision_encoder: true
+  freeze_roi_modules: true
+  grad_checkpoint_qformer: false
+  original_spatial_dims: [201, 480, 480]
+  vision_gradient_checkpointing: false
+  vision_precision: "bfloat16"
+  lora:
+    enabled: true
+    rank: 32
+    alpha: 64
+    dropout: 0.1
+    target_modules: ["q_proj", "k_proj", "v_proj", "o_proj"]
+    train_embed_tokens: false
+    train_lm_head: false
+  ctvit:
+    dim: 512
+    codebook_size: 8192
+    image_size: 480
+    patch_size: 20
+    temporal_patch_size: 10
+    spatial_depth: 4
+    temporal_depth: 4
+    dim_head: 32
+    heads: 8
+    num_fusion_layers: 4
+
+optimizer:
+  lr_qformer: 1.0e-6
+  lr_projector: 1.0e-6
+  lr_fpn: 1.0e-6
+  lr_lora: 1.0e-6
+  weight_decay: 0.01
+
+training:
+  epochs: 10
+  batch_size: 4                 # TĂNG 2x: 4 -> 8 (tận dụng GPU tốt hơn)
+  grad_accum: 2                 # Effective batch = 8*2 = 16 (nhanh hơn + ổn định hơn)
+  max_grad_norm: 1.0
+  warmup_ratio: 0.05
+  checkpoint_dir: "./outputs/checkpoints"
+  log_dir: "./outputs/logs"
+  predictions_dir: "./outputs/predictions"
+  resume_from: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage2/outputs_dataAThai/checkpoints/best.pt"
+  resume_weights_only: true     # CHỈ load model weights, RESET optimizer/scheduler (khuyến nghị khi đổi batch_size)
+  validation_interval: 1        # validate mỗi epoch
+  max_gen_tokens: 1024            # FIX: Giảm từ 1024 -> 512 (actual max 296 tokens, đủ với buffer)
+  val_subset_size: 20            # Chỉ generate 20 samples (validation speed)
+  generate_csv_epochs: []  # Chỉ generate CSV ở các epoch này
+
+wandb:
+  enabled: true
+  project: "hirra-stage2"
+  name: "global-context-alignment"
+  api_key: "072fb112587c6b4507f5ec59e575d234c3e22649"
+
+system:
+  seed: 42
+  mixed_precision: true

@@ -1,0 +1,104 @@
+no change     /home/user01/miniconda3/condabin/conda
+no change     /home/user01/miniconda3/bin/conda
+no change     /home/user01/miniconda3/bin/conda-env
+no change     /home/user01/miniconda3/bin/activate
+no change     /home/user01/miniconda3/bin/deactivate
+no change     /home/user01/miniconda3/etc/profile.d/conda.sh
+no change     /home/user01/miniconda3/etc/fish/conf.d/conda.fish
+no change     /home/user01/miniconda3/shell/condabin/Conda.psm1
+no change     /home/user01/miniconda3/shell/condabin/conda-hook.ps1
+no change     /home/user01/miniconda3/lib/python3.12/site-packages/xontrib/conda.xsh
+no change     /home/user01/miniconda3/etc/profile.d/conda.csh
+no change     /home/user01/.bashrc
+No action taken.
+============================================
+[Stage2 Inference]
+============================================
+Config: config_stage2.yaml
+Checkpoint: outputs/checkpoints/best.pt
+Output: inference_predictions.csv
+Number of samples: 767
+============================================
+Warning: torch_geometric not available (ModuleNotFoundError). Using manual GATv2 implementation.
+[HiRRA] Initializing with config: improved
+[HiRRA] Loading Module 1: Vision Encoder (CTViT)...
+[HiRRA] ✓ Vision Encoder loaded (dim=512)
+[HiRRA] Loading Module 3: Language Decoder (Qwen/Qwen3-8B)...
+[HiRRA] ✓ Language Decoder loaded (bf16, hidden_dim=4096)
+[HiRRA] Loading Module 2: Feature Extractors (improved)...
+[Graph Reasoning] Initialized with config: basic
+[HiRRA] ✓ Feature Extractors loaded:
+        - Multi-scale FPN: True
+        - Sparse Q-Former: False
+        - SPP RoI: True
+        - Graph Reasoning: True
+        - Graph Config: basic
+[HiRRA] Creating Visual Projector (512 -> 4096)...
+[HiRRA] ✓ Visual Projector created
+[HiRRA] ✓ HiRRA initialization complete!
+[HiRRA] Total modules: Vision Encoder + Feature Extractors + Projector + LLM
+[Stage2][LoRA] Applying LoRA adapters to language decoder...
+[Stage2][LoRA] Trainable parameters after applying LoRA:
+trainable params: 30,670,848 || all params: 8,219,235,328 || trainable%: 0.3732
+[Inference] Loading checkpoint from: outputs/checkpoints/best.pt
+[Inference] ✓ Checkpoint loaded successfully
+[Inference] ✓ Checkpoint was from epoch 7
+[Dataset] Loaded 6900 samples from /home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/data/processed_480_npy/label/PETCT_parts_final_train.json
+[Dataset] Input root: /home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/data
+[Dataset] Output root: /home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/data
+[Dataset] Reading from: processed_480_npy/
+[Dataset] Loaded 768 samples from /home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/data/processed_480_npy/label/PETCT_parts_final_val.json
+[Dataset] Input root: /home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/data
+[Dataset] Output root: /home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/data
+[Dataset] Reading from: processed_480_npy/
+[Evaluation] Generating predictions for 128/128 batches (max_samples=767)...
+
+[DEBUG] Decoding behavior check:
+  Input IDs length: 141
+  Attention mask length: 141
+  Output IDs length: 157
+  First 10 output tokens: [39, 58506, 128492, 128802, 856, 20229, 279, 78, 128788, 128406]
+  Last 10 output tokens: [151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643, 151643]
+  Full decode (first 200 chars): Hình ảnh bắt xạ theo đặc điểm sinh lý ở gan, lách, thượng thận và đài bể thận 2 bên. Hình ảnh tăng chuyển hóa FDG ở khung đại tràng theo đặc điểm sinh lý. Hình ảnh vài hạch bẹn, kích thước 10mm, không
+  → Using full output as prediction (inputs_embeds mode)
+  → Output length: 157 tokens
+  [Sample 0] new_ids length: 157, prediction length: 308 chars
+  [Sample 1] new_ids length: 157, prediction length: 354 chars
+  [Sample 2] new_ids length: 157, prediction length: 458 chars
+  Processed 10/128 batches
+  Processed 20/128 batches
+  Processed 30/128 batches
+  Processed 40/128 batches
+  Processed 50/128 batches
+  Processed 60/128 batches
+  Processed 70/128 batches
+  Processed 80/128 batches
+  Processed 90/128 batches
+  Processed 100/128 batches
+  Processed 110/128 batches
+  Processed 120/128 batches
+[Evaluation] Generated 768 predictions
+[Evaluation] Exported 768 predictions to inference_predictions.csv
+
+======================================================================
+Sample Predictions:
+======================================================================
+
+[Sample 1]
+Patient ID: day_03_patient_163
+Region: abdomen_pelvis
+Ground Truth: Hình ảnh bắt xạ theo đặc điểm sinh lý ở gan, lách, thượng thận và đài bể thận 2 bên. Hình ảnh tăng chuyển hóa FDG ở khung đại tràng theo đặc điểm sinh lý. Hình ảnh vài hạch bẹn, kích thước 10mm, không...
+Prediction: Hình ảnh bắt xạ theo đặc điểm sinh lý ở gan, lách, thượng thận và đài bể thận 2 bên. Hình ảnh tăng chuyển hóa FDG ở khung đại tràng theo đặc điểm sinh lý. Hình ảnh vài hạch bẹn, kích thước 10mm, không...
+----------------------------------------------------------------------
+
+[Sample 2]
+Patient ID: day_03_patient_163
+Region: chest
+Ground Truth: Hình ảnh bắt xạ theo đặc điểm sinh lý ở tim. Không phát hiện hình ảnh tràn dịch màng phổi hai bên và tràn dịch màng tim. Hình ảnh vài hạch nách nhỏ ( 10 mm) ở hố nách hai bên, không tăng chuyển hóa FD...
+Prediction: Hình ảnh bắt xạ theo đặc điểm sinh lý ở tim. Không phát hiện hình ảnh tràn dịch màng phổi hai bên và tràn dịch màng tim. Hình ảnh vài hạch nách nhỏ ( 10 mm) ở hố nách hai bên, không tăng chuyển hóa FD...
+----------------------------------------------------------------------
+============================================
+Inference completed!
+Results saved to: inference_predictions.csv
+============================================
+Inference completed.

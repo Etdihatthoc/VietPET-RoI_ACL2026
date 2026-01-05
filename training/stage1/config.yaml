@@ -1,0 +1,65 @@
+# Stage 1: CLIP-style Vision-Text Pretraining Configuration
+
+# Dataset
+data:
+  root_dir: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/data/processed_480_npy"
+  train_json: "label/PETCT_parts_final_train.json"       # 2,439 samples
+  val_json: "label/PETCT_parts_final_val.json"           # 609 samples
+  spatial_size: 480                                 # Resize to 320x320 (giảm từ 480 để tiết kiệm VRAM)
+  depth_strategy: "variable"                        # Keep variable depth, pad in collate
+  normalize_by: 32767.0                             # Normalization divisor
+  num_workers: 4                                    # Tăng workers để overlap HDD I/O
+  pin_memory: true
+  prefetch_factor: 2                                # Prefetch nhiều để hide HDD latency (8 workers x 4 = 32 batches buffered)
+
+# Model Architecture
+model:
+  # Vision encoder (CTViT)
+  ctvit_dim: 512
+  ctvit_patch_size: 20
+  ctvit_temporal_patch_size: 10
+  num_fusion_layers: 4                             # CT-PET cross-attention layers
+  fusion_heads: 4                                   # Attention heads cho fusion layers (giảm từ 8 để tiết kiệm VRAM)
+  pretrained_ctvit: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/model/noise_ctvit.79000.pt"                            # Path to pretrained CTViT (optional)
+  vision_dtype: "bfloat16"                          # Use bfloat16 for vision encoder (match với mixed_precision)
+  use_gradient_checkpointing: false                  # Use gradient checkpointing to reduce VRAM (trade compute for memory)
+
+  # Text encoder (PhoBERT)
+  phobert_model: "vinai/phobert-base-v2"            # Vietnamese BERT (135M params)
+  freeze_phobert: false                              # Freeze PhoBERT (not trainable)
+  load_text_in_4bit: true                          # Use 4-bit quantization to save GPU memory
+  load_text_in_8bit: false
+
+  # Projection heads
+  latent_dim: 512                                   # Shared latent space dimension
+
+# Training Hyperparameters
+training:
+  epochs: 20
+  batch_size: 16                                     # Per GPU (small due to 480x480 + variable depth)
+  grad_accum: 2                                     # Gradient accumulation steps (effective batch = 32)
+
+  # Learning rates
+  lr_vision: 5.0e-5                                 # Vision encoder + projection
+  lr_text: 5.0e-5                                   # PhoBERT + text projection (lower LR)
+
+  # Optimization
+  weight_decay: 0.03
+  warmup_epochs: 1                                  # Linear warmup epochs
+  grad_clip: 1.0                                    # Gradient clipping norm
+
+  # Checkpointing
+  save_every: 1                                     # Save checkpoint every N epochs
+  checkpoint_dir: "./checkpoints_new"                   # Checkpoint save directory
+  resume_from: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/checkpoints_2/best_old.pt"                                 # Optional path to resume training (e.g., "./checkpoints/best.pt")
+
+# Weights & Biases Logging
+wandb:
+  enabled: true
+  project: "hirra-stage1-clip"                      # Wandb project name
+  name: "multimodal-clip-phobert"                   # Run name
+  api_key: "072fb112587c6b4507f5ec59e575d234c3e22649"  # Your Wandb API key
+
+# System
+seed: 42
+mixed_precision: true                               # Use bf16 mixed precision
