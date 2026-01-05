@@ -97,7 +97,7 @@ def validate_dataset_boxes():
     print("TEST 3: Validation Dataset Boxes")
     print("="*60)
 
-    dataset_path = "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data/combined_roi_reformat_resized_train.json"
+    dataset_path = REPO_ROOT / "training/stage3/data/full_data/combined_roi_reformat_resized_train.json"
 
     if not Path(dataset_path).exists():
         print(f"⚠️  Dataset không tồn tại: {dataset_path}")

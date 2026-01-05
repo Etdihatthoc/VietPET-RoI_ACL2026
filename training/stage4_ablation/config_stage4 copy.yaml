@@ -2,9 +2,9 @@
 
 # Data Configuration
 data:
-  train_json: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data/combined_roi_reformat_resized_train.json"
-  val_json: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data/combined_roi_reformat_resized_val.json"
-  data_root: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data"
+  train_json: "training/stage3/data/full_data/combined_roi_reformat_resized_train.json"
+  val_json: "training/stage3/data/full_data/combined_roi_reformat_resized_val.json"
+  data_root: "training/stage3/data/full_data"
   train_split: null  # use predefined split files
   num_workers: 8
   seed: 42
@@ -42,9 +42,9 @@ model:
   warmstarted_checkpoint: null
   # Checkpoints for selective loading (dùng nếu không có warmstarted_checkpoint)
   # Stage 2: Full checkpoint for global context (vision encoder, Q-Former, global projector, LLM with LoRA)
-  stage2_checkpoint: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage2/outputs_dataAThai/checkpoints/best.pt"
+  stage2_checkpoint: "training/stage2/outputs_dataAThai/checkpoints/best.pt"
   # Stage 3: Only ROI modules (roi_extractor, graph_module, roi_projector)
-  stage3_checkpoint: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/outputs_ROI_Lora_reviewed_v2/checkpoints/best.pt"
+  stage3_checkpoint: "training/stage3/outputs_ROI_Lora_reviewed_v2/checkpoints/best.pt"
   merge_lora_from_stage2: false
   train_full_llm: false
   load_lora_from_stage2: true
@@ -147,7 +147,7 @@ wandb:
   enabled: true
   project: "hirra-stage4"
   run_name: "stage4_comprehensive_fix_v3"
-  api_key: "072fb112587c6b4507f5ec59e575d234c3e22649"
+  api_key: ""
   entity: null  # Optional: your wandb username or team
   tags: ["stage4", "fix-v3", "roi-coordinate-fix", "separate-layernorm", "roi-descriptions", "warmstarted", "early-stopping", "label-smoothing"]
   notes: |-

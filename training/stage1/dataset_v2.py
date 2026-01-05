@@ -36,8 +36,8 @@ class ViMedPETPreprocessedDatasetV2(Dataset):
         """
         Args:
             json_path: Path to JSON file (e.g., PETCT_parts_train_val_test.json)
-            input_root: Input root (/media/gpus/New Volume/ViMed-PET/raw)
-            output_root: Output root (/mnt/disk1/.../stage1)
+            input_root: Input root (e.g., data/raw)
+            output_root: Output root (e.g., training/stage1/data)
             config: Data config dict
         """
         self.input_root = input_root
@@ -175,12 +175,12 @@ def create_dataloaders(config):
     - Reports từ: raw/processed_npy/.../report/....json
     """
      # Paths
-    # json_path = "/mnt/usb/processed_480_npy/label/PETCT_parts_train_val_test.json"
-    # input_root = "/mnt/usb"  # Cho reports
-    # output_root = "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1"  # Cho CT/PET
+    # json_path = "training/stage1/data/processed_480_npy/label/PETCT_parts_train_val_test.json"
+    # input_root = "training/stage1/data"  # Cho reports
+    # output_root = "training/stage1/data"  # Cho CT/PET
 
     data_cfg = config['data']
-    data_root = data_cfg.get('root_dir', '/mnt/usb/processed_480_npy')
+    data_root = data_cfg.get('root_dir', 'training/stage1/data/processed_480_npy')
 
     # Nếu root_dir chứa "processed_480_npy", lấy parent directory
     if 'processed_480_npy' in data_root:

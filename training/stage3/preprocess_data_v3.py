@@ -4,9 +4,9 @@ Resize CT/PET volumes to 201×480×480 and export unified ROI JSON.
 
 Usage:
   python preprocess_data_v3.py \
-      --json_path "/mnt/disk2/.../50samples_roi_reformat.json" \
-      --input_root "/mnt/disk2/.../NPY_DATA" \
-      --output_root "/mnt/disk1/.../training/stage3/data"
+      --json_path "training/stage3/data/50samples_roi_reformat_resized.json" \
+      --input_root "training/stage3/data/raw" \
+      --output_root "training/stage3/data"
 
 """
 

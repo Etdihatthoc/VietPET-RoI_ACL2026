@@ -6,6 +6,7 @@
 HiRRA is a multimodal architecture for generating structured medical reports from 3D PET/CT volumes with ROI-level supervision. The system combines a 3D vision encoder, multi-scale feature extraction, ROI reasoning, and a large language model (LLM) decoder. This repository includes training pipelines for a multi-stage curriculum and ablation studies.
 
 Demo data: Uploading...
+
 Pretrained model: Uploading...
 
 ## Highlights

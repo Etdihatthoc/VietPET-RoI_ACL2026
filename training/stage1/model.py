@@ -13,10 +13,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 from transformers import AutoModel, AutoTokenizer, BitsAndBytesConfig
 import sys
+from pathlib import Path
 from contextlib import nullcontext
 
 # Import MultimodalEncoder từ hirra_model
-sys.path.append('/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model')
+REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.append(str(REPO_ROOT))
 from hirra_model.vision_encoder.multimodal_encoder import MultimodalEncoder
 
 
