@@ -203,19 +203,19 @@ def main():
     parser.add_argument(
         "--stage2",
         type=str,
-        default="/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage2/outputs_dataAThai/checkpoints/best.pt",
+        default="training/stage2/outputs_dataAThai/checkpoints/best.pt",
         help="Path to Stage 2 checkpoint"
     )
     parser.add_argument(
         "--stage3",
         type=str,
-        default="/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/outputs_ROI_Lora_reviewed/checkpoints/best.pt",
+        default="training/stage3/outputs_ROI_Lora_reviewed/checkpoints/best.pt",
         help="Path to Stage 3 checkpoint"
     )
     parser.add_argument(
         "--output",
         type=str,
-        default="/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage4/warmstarted_checkpoint.pt",
+        default="training/stage4/warmstarted_checkpoint.pt",
         help="Path to save warmstarted checkpoint"
     )
 

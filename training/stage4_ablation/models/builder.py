@@ -8,7 +8,7 @@ from pathlib import Path
 
 # Add repo root to path
 CURRENT_DIR = Path(__file__).resolve()
-REPO_ROOT = CURRENT_DIR.parents[3]  # /mnt/disk1/aiotlab/sondinh/Model_dice
+REPO_ROOT = CURRENT_DIR.parents[3]
 if str(REPO_ROOT) not in sys.path:
     sys.path.append(str(REPO_ROOT))
 

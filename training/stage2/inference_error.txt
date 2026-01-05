@@ -1,30 +1,0 @@
-/cm/local/apps/slurm/var/spool/job01626/slurm_script: line 9: cd: too many arguments
-Error while loading conda entry point: conda-libmamba-solver (libarchive.so.19: cannot open shared object file: No such file or directory)
-Error while loading conda entry point: conda-libmamba-solver (libarchive.so.19: cannot open shared object file: No such file or directory)
-
-CondaError: Run 'conda init' before 'conda activate'
-
-/home/user01/miniconda3/envs/dinhson/lib/python3.12/site-packages/vector_quantize_pytorch/vector_quantize_pytorch.py:261: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
-  @autocast(enabled = False)
-/home/user01/miniconda3/envs/dinhson/lib/python3.12/site-packages/vector_quantize_pytorch/vector_quantize_pytorch.py:391: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
-  @autocast(enabled = False)
-[2025-11-25 19:00:15,400][INFO] Using device: cuda
-[2025-11-25 19:00:15,400][INFO] Building model...
-Loading checkpoint shards:   0%|          | 0/5 [00:00<?, ?it/s]Loading checkpoint shards:  60%|██████    | 3/5 [00:00<00:00, 29.54it/s]Loading checkpoint shards: 100%|██████████| 5/5 [00:00<00:00, 37.53it/s]
-[2025-11-25 19:00:43,573][INFO] Trainable params: 69.28M (0.82%) | Total params: 8423.80M
-[2025-11-25 19:01:43,041][INFO] Building dataloaders...
-/home/user01/miniconda3/envs/dinhson/lib/python3.12/site-packages/torch/utils/data/dataloader.py:626: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
-  warnings.warn(
-[2025-11-25 19:01:43,061][INFO] Validation batches: 128
-[2025-11-25 19:01:43,061][INFO] Generating predictions for 767 samples...
-[2025-11-25 19:01:43,061][INFO] Max generation tokens: 1024
-/home/user01/miniconda3/envs/dinhson/lib/python3.12/site-packages/transformers/generation/configuration_utils.py:634: UserWarning: `do_sample` is set to `False`. However, `temperature` is set to `0.5` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `temperature`. This was detected when initializing the generation config instance, which means the corresponding file may hold incorrect parameterization and should be fixed.
-  warnings.warn(
-/home/user01/miniconda3/envs/dinhson/lib/python3.12/site-packages/transformers/generation/configuration_utils.py:639: UserWarning: `do_sample` is set to `False`. However, `top_p` is set to `0.9` -- this flag is only used in sample-based generation modes. You should set `do_sample=True` or unset `top_p`. This was detected when initializing the generation config instance, which means the corresponding file may hold incorrect parameterization and should be fixed.
-  warnings.warn(
-[2025-11-25 19:41:02,307][INFO] Exporting predictions to: inference_predictions.csv
-[2025-11-25 19:41:02,337][INFO] ======================================================================
-[2025-11-25 19:41:02,337][INFO] Inference completed!
-[2025-11-25 19:41:02,337][INFO] Generated 768 predictions
-[2025-11-25 19:41:02,337][INFO] Output saved to: inference_predictions.csv
-[2025-11-25 19:41:02,337][INFO] ======================================================================

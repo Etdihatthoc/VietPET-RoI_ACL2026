@@ -1,7 +1,7 @@
 # Stage 2 configuration (Global Context Alignment)
 
 data:
-  dataset_root: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage3/data/full_data"
+  dataset_root: "training/stage3/data/full_data"
   train_json: "petct_from_stage3_train.json"       # 2,439 samples
   val_json: "petct_from_stage3_val.json"  
   num_workers: 8
@@ -26,7 +26,7 @@ prompt:
   add_eos: true
 
 model:
-  stage1_checkpoint: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/checkpoints_2/best_old.pt"
+  stage1_checkpoint: "training/stage1/checkpoints_2/best_old.pt"
   language_decoder_name: "Qwen/Qwen3-8B"
   language_decoder_4bit: false
   feature_extractor_config: "improved"
@@ -77,7 +77,7 @@ training:
   checkpoint_dir: "./outputs/checkpoints"
   log_dir: "./outputs/logs"
   predictions_dir: "./outputs/predictions"
-  resume_from: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage2/outputs_dataAThai/checkpoints/best.pt"
+  resume_from: "training/stage2/outputs_dataAThai/checkpoints/best.pt"
   resume_weights_only: true     # CHỈ load model weights, RESET optimizer/scheduler (khuyến nghị khi đổi batch_size)
   validation_interval: 1        # validate mỗi epoch
   max_gen_tokens: 1024            # FIX: Giảm từ 1024 -> 512 (actual max 296 tokens, đủ với buffer)
@@ -88,7 +88,7 @@ wandb:
   enabled: true
   project: "hirra-stage2"
   name: "global-context-alignment"
-  api_key: "072fb112587c6b4507f5ec59e575d234c3e22649"
+  api_key: ""
 
 system:
   seed: 42

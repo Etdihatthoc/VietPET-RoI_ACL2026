@@ -2,7 +2,7 @@
 
 # Dataset
 data:
-  root_dir: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/data/processed_480_npy"
+  root_dir: "training/stage1/data/processed_480_npy"
   train_json: "label/PETCT_parts_final_train.json"       # 2,439 samples
   val_json: "label/PETCT_parts_final_val.json"           # 609 samples
   spatial_size: 480                                 # Resize to 320x320 (giảm từ 480 để tiết kiệm VRAM)
@@ -20,7 +20,7 @@ model:
   ctvit_temporal_patch_size: 10
   num_fusion_layers: 4                             # CT-PET cross-attention layers
   fusion_heads: 4                                   # Attention heads cho fusion layers (giảm từ 8 để tiết kiệm VRAM)
-  pretrained_ctvit: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/model/noise_ctvit.79000.pt"                            # Path to pretrained CTViT (optional)
+  pretrained_ctvit: "training/stage1/model/noise_ctvit.79000.pt"                            # Path to pretrained CTViT (optional)
   vision_dtype: "bfloat16"                          # Use bfloat16 for vision encoder (match với mixed_precision)
   use_gradient_checkpointing: false                  # Use gradient checkpointing to reduce VRAM (trade compute for memory)
 
@@ -51,14 +51,14 @@ training:
   # Checkpointing
   save_every: 1                                     # Save checkpoint every N epochs
   checkpoint_dir: "./checkpoints_new"                   # Checkpoint save directory
-  resume_from: "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1/checkpoints_2/best_old.pt"                                 # Optional path to resume training (e.g., "./checkpoints/best.pt")
+  resume_from: "training/stage1/checkpoints_2/best_old.pt"                                 # Optional path to resume training (e.g., "./checkpoints/best.pt")
 
 # Weights & Biases Logging
 wandb:
   enabled: true
   project: "hirra-stage1-clip"                      # Wandb project name
   name: "multimodal-clip-phobert"                   # Run name
-  api_key: "072fb112587c6b4507f5ec59e575d234c3e22649"  # Your Wandb API key
+  api_key: ""                                        # Use WANDB_API_KEY env var
 
 # System
 seed: 42

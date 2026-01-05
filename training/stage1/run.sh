@@ -4,9 +4,9 @@
 #SBATCH --error=error.txt
 #SBATCH --ntasks=1
 #SBATCH --gpus=1
-#SBATCH --nodelist=dgx01
 
-cd /home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage1
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
 
 conda init
 conda activate dinhson
@@ -14,5 +14,4 @@ conda activate dinhson
 bash train.sh
 
 echo "Training completed."
-
 

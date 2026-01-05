@@ -209,9 +209,9 @@ from pathlib import Path
 import shutil
 import json
 
-RAW_ROOT = Path("/media/gpus/Do not enter/ViMed-PET")
-TEMP_ROOT = Path("/mnt/disk1/SonDinh/SonDinh")
-DEST_ROOT = Path("/mnt/disk1/SonDinh/SonDinh/DICE_model/training/stage1/processed_480_npy")
+RAW_ROOT = Path("data/raw")
+TEMP_ROOT = Path("data/tmp")
+DEST_ROOT = Path("training/stage1/data/processed_480_npy")
 
 DEST_ROOT.mkdir(parents=True, exist_ok=True)
 TEMP_ROOT.mkdir(parents=True, exist_ok=True)

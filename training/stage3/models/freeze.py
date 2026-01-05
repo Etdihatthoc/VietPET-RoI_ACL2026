@@ -211,7 +211,10 @@ def _apply_lora(model, lora_cfg: Dict[str, Any]):
 # Example usage
 if __name__ == "__main__":
     import sys
-    sys.path.append("/mnt/disk1/aiotlab/sondinh/Model_dice/Hirra_model")
+    from pathlib import Path
+
+    repo_root = Path(__file__).resolve().parents[3]
+    sys.path.append(str(repo_root))
 
     from hirra_model.hirra import HiRRAModel
 

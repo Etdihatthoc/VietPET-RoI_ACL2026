@@ -16,7 +16,8 @@ import torch.nn as nn
 from pathlib import Path
 
 # Add parent directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT))
 
 print("=" * 80)
 print("STAGE 4 COMPREHENSIVE FIXES VERIFICATION")
@@ -122,8 +123,8 @@ except Exception as e:
 
 try:
     # Check warmstarted checkpoint structure
-    warmstart_path = "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage4/warmstarted_checkpoint.pt"
-    if Path(warmstart_path).exists():
+    warmstart_path = REPO_ROOT / "training/stage4/warmstarted_checkpoint.pt"
+    if warmstart_path.exists():
         # Try to load just the keys (lightweight)
         import zipfile
         import pickle
@@ -148,7 +149,7 @@ print("\n[Phase 3/4] Verifying Enhanced Prompt Configuration...")
 try:
     import yaml
 
-    config_path = "/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage4/config_stage4.yaml"
+    config_path = REPO_ROOT / "training/stage4/config_stage4.yaml"
     with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
 

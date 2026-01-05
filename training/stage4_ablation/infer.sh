@@ -3,7 +3,7 @@
 # Usage: bash infer.sh [config] [checkpoint] [output_csv] [num_samples]
 #   num_samples: Number of samples to generate (default: empty = ALL validation samples)
 
-SCRIPT_DIR="/home/user01/aiotlab/sondinh/ACL 2026/Hirra_model/training/stage4_ablation"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DEFAULT_CONFIG="${SCRIPT_DIR}/config_stage4.yaml"
 DEFAULT_CHECKPOINT="${SCRIPT_DIR}/outputs_ablation_stage2/checkpoints/best.pt"
 DEFAULT_OUTPUT="${SCRIPT_DIR}/outputs_ablation_stage2/predictions/inference_predictions.csv"

@@ -78,6 +78,12 @@ logs/
 training/*/logs/
 wandb/
 .wandb/
+error.txt
+result.txt
+inference_error.txt
+inference_result.txt
+slurm-*.out
+*.out
 
 # Large Data Directories
 data/
@@ -131,3 +137,9 @@ docs/_build/
 output_*/
 Hirra_model/training/stage4_ablation/
 *.ckpt
+
+*.txt
+*.log
+*.csv
+*.npy
+*.sh
